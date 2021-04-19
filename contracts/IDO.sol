@@ -24,12 +24,12 @@ contract IDO is Ownable {
 
     modifier onlyWhileOpen {
         // solium-disable-next-line security/no-block-members
-        require(block.timestamp >= openingTime && block.timestamp <= closingTime);
+        require(block.timestamp >= openingTime && block.timestamp <= closingTime, "IDO not open");
         _;
     }
 
     modifier isWhitelisted(address _beneficiary) {
-        require(whitelist[_beneficiary]);
+        require(whitelist[_beneficiary], "User not in whitelist");
         _;
     }
 
@@ -74,7 +74,7 @@ contract IDO is Ownable {
         // Check and update funding cap
         uint256 _existingContribution = contributions[msg.sender];
         uint256 _newContribution = _existingContribution.add(_fromAmount);
-        require(_newContribution <= investorCap);
+        require(_newContribution <= investorCap, "Buy amount exceeds cap");
         contributions[msg.sender] = _newContribution;
 
         // Forward token to fund wallet
